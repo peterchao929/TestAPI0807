@@ -6,11 +6,11 @@ namespace TestAPI0807.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserDataController : ControllerBase
+    public class UserDatasController : ControllerBase
     {
         private readonly TodoContext _context;
 
-        public UserDataController(TodoContext context)
+        public UserDatasController(TodoContext context)
         {
             _context = context;
         }
