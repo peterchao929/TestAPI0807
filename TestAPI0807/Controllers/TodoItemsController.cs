@@ -58,7 +58,7 @@ namespace TestAPI0807.Controllers
             todoItem.Secondname = todoDTO.Secondname;
             todoItem.Gender = todoDTO.Gender;
             todoItem.Age = todoDTO.Age;
-            todoItem.RegiDate = todoDTO.RegiDate;
+            todoItem.RegistorDate = todoDTO.RegistorDate;
 
             try
             {
@@ -83,7 +83,7 @@ namespace TestAPI0807.Controllers
                 Secondname = todoDTO.Secondname,
                 Gender = todoDTO.Gender,
                 Age = todoDTO.Age,
-                RegiDate = todoDTO.RegiDate
+                RegistorDate = todoDTO.RegistorDate
             };
 
             _context.TodoItems.Add(todoItem);
@@ -128,7 +128,7 @@ namespace TestAPI0807.Controllers
                 Secondname = todoitem.Secondname,
                 Gender = todoitem.Gender,
                 Age = todoitem.Age,
-                RegiDate = todoitem.RegiDate,
+                RegistorDate = todoitem.RegistorDate,
             };
     }
 }
