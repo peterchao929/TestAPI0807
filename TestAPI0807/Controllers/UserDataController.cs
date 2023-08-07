@@ -83,7 +83,8 @@ namespace TestAPI0807.Controllers
                 Lastname = userDTO.Lastname,
                 Gender = userDTO.Gender,
                 Age = userDTO.Age,
-                RegistorDate = userDTO.RegistorDate
+                RegistorDate = DateTime.Now.ToLocalTime(),
+                //RegistorDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             };
 
             _context.UserDatas.Add(userData);
@@ -128,7 +129,7 @@ namespace TestAPI0807.Controllers
                 Lastname = userData.Lastname,
                 Gender = userData.Gender,
                 Age = userData.Age,
-                RegistorDate = userData.RegistorDate,
+                RegistorDate = userData.RegistorDate
             };
     }
 }

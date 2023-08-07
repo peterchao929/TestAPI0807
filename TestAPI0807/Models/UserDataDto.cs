@@ -7,6 +7,6 @@
         public string? Lastname { get; set; }
         public int Gender { get; set; }
         public int Age { get; set; }
-        public DateOnly RegistorDate { get; set; }
+        public DateTime RegistorDate { get; set; }
     }
 }
