@@ -3,10 +3,7 @@
     public class TodoItemDTO
     {
         public long Id { get; set; }
-        public string? Firstname { get; set; }
-        public string? Secondname { get; set; }
-        public int Gender { get; set; }
-        public int Age { get; set; }
-        public DateOnly RegistorDate { get; set; }
+        public string? Name { get; set; }
+        public bool IsComplete { get; set; }
     }
 }
