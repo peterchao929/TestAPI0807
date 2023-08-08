@@ -15,16 +15,25 @@ namespace TestAPI0807.Controllers
             _context = context;
         }
 
-        // GET: api/TodoItems
+        // GET: api/UserDatas
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDataDto>>> GetUserDatas()
         {
+            //var userdata = new DateTimeChange
+            //{
+            //    Firstname = userDto.Firstname,
+            //    Lastname = userDto.Lastname,
+            //    Gender = userDto.Gender,
+            //    Age = userDto.Age,
+            //    RegistorDate = userDto.RegistorDate.ToString("yyyy-MM-dd HH:mm:ss")
+            //};
+
             return await _context.UserDatas
                 .Select(x => ItemToDto(x))
                 .ToListAsync();
         }
 
-        // GET: api/TodoItems/5
+        // GET: api/UserDatas/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDataDto>> GetUserData(long id)
         {
@@ -38,7 +47,7 @@ namespace TestAPI0807.Controllers
             return ItemToDto(userdata);
         }
 
-        // PUT: api/TodoItems/5
+        // PUT: api/UserDatas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUserData(long id, UserDataDto userDataDto)
@@ -72,18 +81,19 @@ namespace TestAPI0807.Controllers
             return NoContent();
         }
 
-        // POST: api/TodoItems
+        // POST: api/UserDatas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<UserDataDto>> PostTodoItem(UserDataDto userDTO)
+        public async Task<ActionResult<UserDataDto>> PostUserData(UserDataDto userDTO)
         {
+            DateTime dateTime = DateTime.Now;
             var userData = new UserData
             {
                 Firstname = userDTO.Firstname,
                 Lastname = userDTO.Lastname,
                 Gender = userDTO.Gender,
                 Age = userDTO.Age,
-                RegistorDate = DateTime.Now.ToLocalTime(),
+                RegistorDate = dateTime
                 //RegistorDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             };
 
@@ -96,7 +106,7 @@ namespace TestAPI0807.Controllers
                 ItemToDto(userData));
         }
 
-        // DELETE: api/TodoItems/5
+        // DELETE: api/UserDatas/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserData(long id)
         {
@@ -122,14 +132,14 @@ namespace TestAPI0807.Controllers
         }
 
         private static UserDataDto ItemToDto(UserData userData) =>
-            new UserDataDto
+            new()
             {
                 Id = userData.Id,
                 Firstname = userData.Firstname,
                 Lastname = userData.Lastname,
                 Gender = userData.Gender,
                 Age = userData.Age,
-                RegistorDate = userData.RegistorDate
+                RegistorDate = DateTime.Now
             };
     }
 }
