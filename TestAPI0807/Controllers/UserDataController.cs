@@ -8,9 +8,9 @@ namespace TestAPI0807.Controllers
     [ApiController]
     public class UserDatasController : ControllerBase
     {
-        private readonly TodoContext _context;
+        private readonly UserDataContext _context;
 
-        public UserDatasController(TodoContext context)
+        public UserDatasController(UserDataContext context)
         {
             _context = context;
         }
