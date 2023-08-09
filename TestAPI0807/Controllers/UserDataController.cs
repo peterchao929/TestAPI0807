@@ -19,15 +19,6 @@ namespace TestAPI0807.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDataDto>>> GetUserDatas()
         {
-            //var userdata = new DateTimeChange
-            //{
-            //    Firstname = userDto.Firstname,
-            //    Lastname = userDto.Lastname,
-            //    Gender = userDto.Gender,
-            //    Age = userDto.Age,
-            //    RegistorDate = userDto.RegistorDate.ToString("yyyy-MM-dd HH:mm:ss")
-            //};
-
             return await _context.UserDatas
                 .Select(x => ItemToDto(x))
                 .ToListAsync();

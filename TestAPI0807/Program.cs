@@ -2,10 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using TestAPI0807.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System.Configuration;
+using TestAPI0807.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//設定連線、SQL版本
+//設定連線、SQL版本 下為另一種設定方式
 //string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 //var serverVersion = new MySqlServerVersion(new Version(8, 0, 28));
 
@@ -17,6 +18,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<UserDataContext>(opt =>
    opt.UseMySql(connectionString, serverVersion)
    );
+builder.Services.AddScoped<TodoItemService, TodoItemServiceImpl>();
 
 //原生TodoContext連線、使用內存資料庫
 //builder.Services.AddDbContext<TodoContext>(opt =>
