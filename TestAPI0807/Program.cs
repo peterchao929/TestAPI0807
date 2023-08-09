@@ -13,14 +13,15 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
-builder.Services.AddControllers();
-builder.Services.AddDbContext<UserDataContext>(opt => {
-    string connectionString = builder.Configuration.GetSection("ConnectionStrings:DefaultConnection").Value;
-    var serverVersion = ServerVersion.AutoDetect(connectionString);
-    opt.UseMySql(connectionString, serverVersion);
+string connectionString = builder.Configuration.GetSection("ConnectionStrings:DefaultConnection").Value;
+var serverVersion = ServerVersion.AutoDetect(connectionString);
 
-    //opt.UseMySql(Configuration.GetC)
-});
+builder.Services.AddControllers();
+builder.Services.AddDbContext<UserDataContext>(opt =>
+   opt.UseMySql(connectionString, serverVersion)
+   );
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 

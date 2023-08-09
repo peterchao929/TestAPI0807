@@ -10,6 +10,7 @@ namespace TestAPI0807.Models
         {
         }
 
+        public DbSet<TodoItem> TodoItems { get; set; } = null!;
         public DbSet<UserData> UserDatas { get; set; } = null!;
     }
 }
