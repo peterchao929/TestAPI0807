@@ -9,11 +9,11 @@ namespace TestAPI0807.Services
 {
     public interface TodoItemService
     {
-        Task<IEnumerable<TodoItemDTO>> GetTodoItems();
+        Task<List<TodoItemDTO>> GetTodoItems();
         Task<ActionResult<TodoItemDTO>> GetTodoItem(long id);
         Task<IActionResult> PutTodoItem(long id, TodoItemDTO todoDTO);
-        Task<ActionResult<TodoItemDTO>> PostTodoItem(TodoItemDTO todoDTO);
-        Task<IActionResult> DeleteTodoItem(long id);
+        Task<TodoItem> PostTodoItem(TodoItemDTO todoDTO);
+        Task<int> DeleteTodoItem(long id);
         bool TodoItemExists(long id);
         TodoItemDTO ItemToDTO(TodoItem todoItem);
     }
@@ -28,7 +28,7 @@ namespace TestAPI0807.Services
 
         // GET: api/TodoItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoItemDTO>>> GetTodoItems()
+        public async Task<List<TodoItemDTO>> GetTodoItems()
         {
             return await _userDataContext.TodoItems
                 .Select(x => ItemToDTO(x))
@@ -56,12 +56,8 @@ namespace TestAPI0807.Services
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItem(long id, TodoItemDTO todoDTO)
         {
-            if (id != todoDTO.Id)
-            {
-                return new BadRequestResult();
-            }
-
             var todoItem = await _userDataContext.TodoItems.FindAsync(id);
+            
             if (todoItem == null)
             {
                 return new NotFoundResult();
@@ -85,9 +81,9 @@ namespace TestAPI0807.Services
         // POST: api/TodoItems
         // <snippet_Create>
         [HttpPost]
-        public async Task<ActionResult<TodoItemDTO>> PostTodoItem(TodoItemDTO todoDTO)
+        public async Task<TodoItem> PostTodoItem(TodoItemDTO todoDTO)
         {
-            var todoItem = new TodoItem
+            TodoItem todoItem = new TodoItem
             {
                 IsComplete = todoDTO.IsComplete,
                 Name = todoDTO.Name
@@ -96,27 +92,18 @@ namespace TestAPI0807.Services
             _userDataContext.TodoItems.Add(todoItem);   
             await _userDataContext.SaveChangesAsync();
 
-            return CreatedAtAction(
-                nameof(GetTodoItem),
-                new { id = todoItem.Id },
-                ItemToDTO(todoItem));
+            return todoItem;
         }
         // </snippet_Create>
 
         // DELETE: api/TodoItems/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTodoItem(long id)
+        public async Task<int> DeleteTodoItem(long id)
         {
-            var todoItem = await _userDataContext.TodoItems.FindAsync(id);
-            if (todoItem == null)
-            {
-                return new NotFoundResult();
-            }
+            var todoitem = await _userDataContext.TodoItems.FindAsync(id);
+            _userDataContext.TodoItems.Remove(todoitem);
 
-            _userDataContext.TodoItems.Remove(todoItem);
-            await _userDataContext.SaveChangesAsync();
-
-            return new NoContentResult();
+            return await _userDataContext.SaveChangesAsync();
         }
         public bool TodoItemExists(long id)
         {
