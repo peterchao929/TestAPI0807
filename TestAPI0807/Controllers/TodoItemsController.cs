@@ -21,16 +21,8 @@ public class TodoItemsController : ControllerBase
 
     // GET: api/TodoItems
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TodoItemDTO>>> GetTodoItems()
+    public async Task<ActionResult<IEnumerable<TodoItemDto>>> GetTodoItems()
     {
-        var foo = await _context.TodoItems
-                .Select(x => new TodoItemDTO
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    IsComplete = x.IsComplete
-                })
-                .ToListAsync();
         var result = await _todoItemService.GetTodoItems().ToListAsync();
           
         if (result == null || result.Count() <= 0)
@@ -44,7 +36,7 @@ public class TodoItemsController : ControllerBase
     // GET: api/TodoItems/5
     // <snippet_GetByID>
     [HttpGet("{id}")]
-    public async Task<ActionResult<TodoItemDTO>> GetTodoItem(long id)
+    public async Task<ActionResult<TodoItemDto>> GetTodoItem(long id)
     {
         var result = await _todoItemService.GetTodoItem(id);
 
@@ -59,7 +51,7 @@ public class TodoItemsController : ControllerBase
     // PUT: api/TodoItems/5
     // <snippet_Update>
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTodoItem(long id, TodoItemDTO todoDTO)
+    public async Task<IActionResult> PutTodoItem(long id, TodoItemDto todoDTO)
     {
         if (id != todoDTO.Id)
         {
@@ -73,7 +65,7 @@ public class TodoItemsController : ControllerBase
     // POST: api/TodoItems
     // <snippet_Create>
     [HttpPost]
-    public IActionResult PostTodoItem(TodoItemDTO todoDTO)
+    public IActionResult PostTodoItem(TodoItemDto todoDTO)
     {
         var result =  _todoItemService.PostTodoItem(todoDTO);
 

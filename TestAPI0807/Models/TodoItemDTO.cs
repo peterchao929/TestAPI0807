@@ -1,6 +1,6 @@
 ﻿namespace TestAPI0807.Models
 {
-    public class TodoItemDTO
+    public class TodoItemDto
     {
         public long Id { get; set; }
         public string? Name { get; set; }

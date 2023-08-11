@@ -11,20 +11,28 @@ namespace TestAPI0807.Services
     public interface UserDataService
     {
         IQueryable<UserDataDto> GetUserDatas();
+
         Task<ActionResult<UserDataDto>> GetUserData(long id);
+
         Task<IActionResult> PutUserData(long id, UserDataDto userDataDto);
+
         UserData PostUserData(UserDataDto userDataDto);
+
         Task<int> DeleteUserData(long id);
+
         bool UserDataExists(long id);
+
         UserDataDto UserToDto(UserData userData);
     }
     public class UserDataServiceImpl : UserDataService
     {
         private readonly UserDataContext _userDataContext;
+
         public UserDataServiceImpl(UserDataContext userDataContext)
         {
             _userDataContext = userDataContext;
         }
+
         public IQueryable<UserDataDto> GetUserDatas()
         {
             return _userDataContext.UserDatas
@@ -39,6 +47,7 @@ namespace TestAPI0807.Services
                     RegistorDate = x.RegistorDate
                 });
         }
+
         public async Task<ActionResult<UserDataDto>> GetUserData(long id)
         {
             var userdata = await _userDataContext.UserDatas.FindAsync(id);
@@ -50,6 +59,7 @@ namespace TestAPI0807.Services
 
             return UserToDto(userdata);
         }
+
         public async Task<IActionResult> PutUserData(long id, UserDataDto userDataDto)
         {
             var userdata = await _userDataContext.UserDatas.FindAsync(id);
@@ -75,6 +85,7 @@ namespace TestAPI0807.Services
 
             return new NoContentResult();
         }
+
         public UserData PostUserData(UserDataDto userDto)
         {
             DateTime dateTime = DateTime.Now;
@@ -91,6 +102,7 @@ namespace TestAPI0807.Services
             _userDataContext.SaveChanges();
             return userData;
         }
+
         public async Task<int> DeleteUserData(long id)
         {
             var userdata = await _userDataContext.UserDatas.FindAsync(id);
@@ -98,10 +110,12 @@ namespace TestAPI0807.Services
 
             return await _userDataContext.SaveChangesAsync();
         }
+
         public bool UserDataExists(long id)
         {
             return _userDataContext.UserDatas.Any(e => e.Id == id);
         }
+
         public UserDataDto UserToDto(UserData userData) =>
             new()
             {

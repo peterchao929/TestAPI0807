@@ -9,28 +9,34 @@ namespace TestAPI0807.Services
 {
     public interface TodoItemService
     {
-        IQueryable<TodoItemDTO> GetTodoItems();
-        Task<ActionResult<TodoItemDTO>> GetTodoItem(long id);
-        Task<IActionResult> PutTodoItem(long id, TodoItemDTO todoDTO);
-        TodoItem PostTodoItem(TodoItemDTO todoDTO);
+        IQueryable<TodoItemDto> GetTodoItems();
+
+        Task<ActionResult<TodoItemDto>> GetTodoItem(long id);
+
+        Task<IActionResult> PutTodoItem(long id, TodoItemDto todoDTO);
+
+        TodoItem PostTodoItem(TodoItemDto todoItemDto);
+
         Task<int> DeleteTodoItem(long id);
+
         bool TodoItemExists(long id);
-        TodoItemDTO ItemToDTO(TodoItem todoItem);
+
+        TodoItemDto ItemToDTO(TodoItem todoItem);
     }
 
     public class TodoItemServiceImpl : TodoItemService
     {
         private readonly UserDataContext _userDataContext;
+
         public TodoItemServiceImpl(UserDataContext userDataContext)
         {
             _userDataContext = userDataContext;
         }
 
-        // GET: api/TodoItems
-        public IQueryable<TodoItemDTO> GetTodoItems()
+        public IQueryable<TodoItemDto> GetTodoItems()
         {
             return  _userDataContext.TodoItems
-                .Select(x => new TodoItemDTO
+                .Select(x => new TodoItemDto
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -38,10 +44,7 @@ namespace TestAPI0807.Services
                 });
         }
 
-        // GET: api/TodoItems/5
-        // <snippet_GetByID>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TodoItemDTO>> GetTodoItem(long id)
+        public async Task<ActionResult<TodoItemDto>> GetTodoItem(long id)
         {
             var todoItem = await _userDataContext.TodoItems.FindAsync(id);
 
@@ -52,12 +55,8 @@ namespace TestAPI0807.Services
             }
             return ItemToDTO(todoItem);
         }
-        // </snippet_GetByID>
 
-        // PUT: api/TodoItems/5
-        // <snippet_Update>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoItem(long id, TodoItemDTO todoDTO)
+        public async Task<IActionResult> PutTodoItem(long id, TodoItemDto todoDTO)
         {
             var todoItem = await _userDataContext.TodoItems.FindAsync(id);
             
@@ -79,12 +78,8 @@ namespace TestAPI0807.Services
             }
             return new NoContentResult();
         }
-        // </snippet_Update>
 
-        // POST: api/TodoItems
-        // <snippet_Create>
-        [HttpPost]
-        public TodoItem PostTodoItem(TodoItemDTO todoDTO)
+        public TodoItem PostTodoItem(TodoItemDto todoDTO)
         {
             TodoItem todoItem = new()
             {
@@ -98,10 +93,7 @@ namespace TestAPI0807.Services
 
             return todoItem;
         }
-        // </snippet_Create>
 
-        // DELETE: api/TodoItems/5
-        [HttpDelete("{id}")]
         public async Task<int> DeleteTodoItem(long id)
         {
             var todoitem = await _userDataContext.TodoItems.FindAsync(id);
@@ -109,17 +101,18 @@ namespace TestAPI0807.Services
 
             return await _userDataContext.SaveChangesAsync();
         }
+
         public bool TodoItemExists(long id)
         {
             return _userDataContext.TodoItems.Any(e => e.Id == id);
         }
-        public TodoItemDTO ItemToDTO(TodoItem todoItem) =>
+
+        public TodoItemDto ItemToDTO(TodoItem todoItem) =>
             new()
             {
                 Id = todoItem.Id,
                 Name = todoItem.Name,
                 IsComplete = todoItem.IsComplete
             };
-
     }
 }
