@@ -9,10 +9,10 @@ namespace TestAPI0807.Services
 {
     public interface TodoItemService
     {
-        Task<List<TodoItemDTO>> GetTodoItems();
+        IQueryable<TodoItemDTO> GetTodoItems();
         Task<ActionResult<TodoItemDTO>> GetTodoItem(long id);
         Task<IActionResult> PutTodoItem(long id, TodoItemDTO todoDTO);
-        Task<TodoItem> PostTodoItem(TodoItemDTO todoDTO);
+        TodoItem PostTodoItem(TodoItemDTO todoDTO);
         Task<int> DeleteTodoItem(long id);
         bool TodoItemExists(long id);
         TodoItemDTO ItemToDTO(TodoItem todoItem);
@@ -27,12 +27,15 @@ namespace TestAPI0807.Services
         }
 
         // GET: api/TodoItems
-        [HttpGet]
-        public async Task<List<TodoItemDTO>> GetTodoItems()
+        public IQueryable<TodoItemDTO> GetTodoItems()
         {
-            return await _userDataContext.TodoItems
-                .Select(x => ItemToDTO(x))
-                .ToListAsync();
+            return  _userDataContext.TodoItems
+                .Select(x => new TodoItemDTO
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    IsComplete = x.IsComplete
+                });
         }
 
         // GET: api/TodoItems/5
@@ -81,16 +84,16 @@ namespace TestAPI0807.Services
         // POST: api/TodoItems
         // <snippet_Create>
         [HttpPost]
-        public async Task<TodoItem> PostTodoItem(TodoItemDTO todoDTO)
+        public TodoItem PostTodoItem(TodoItemDTO todoDTO)
         {
-            TodoItem todoItem = new TodoItem
+            TodoItem todoItem = new()
             {
-                IsComplete = todoDTO.IsComplete,
-                Name = todoDTO.Name
+                Name = todoDTO.Name,
+                IsComplete = todoDTO.IsComplete
             };
 
             _userDataContext.TodoItems.Add(todoItem);   
-            await _userDataContext.SaveChangesAsync();
+            _userDataContext.SaveChangesAsync();
 
             return todoItem;
         }
