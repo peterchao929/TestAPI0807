@@ -11,9 +11,9 @@ namespace TestAPI0807.Services
     {
         IQueryable<TodoItemDto> GetTodoItems();
 
-        Task<ActionResult<TodoItemDto>> GetTodoItem(long id);
+        Task<TodoItemDto> GetTodoItem(long id);
 
-        Task<IActionResult> PutTodoItem(long id, TodoItemDto todoDTO);
+        Task<int> PutTodoItem(long id, TodoItemDto todoDTO);
 
         TodoItem PostTodoItem(TodoItemDto todoItemDto);
 
@@ -44,25 +44,30 @@ namespace TestAPI0807.Services
                 });
         }
 
-        public async Task<ActionResult<TodoItemDto>> GetTodoItem(long id)
+        public async Task<TodoItemDto> GetTodoItem(long id)
         {
             var todoItem = await _userDataContext.TodoItems.FindAsync(id);
 
             if (todoItem == null)
             {
-                //return NotFound();
-                return new NotFoundResult();
+                return null;
             }
+
             return ItemToDTO(todoItem);
         }
 
-        public async Task<IActionResult> PutTodoItem(long id, TodoItemDto todoDTO)
+        public async Task<int> PutTodoItem(long id, TodoItemDto todoDTO)
         {
+            if (id != todoDTO.Id)
+            {
+                return 2;
+            }
+
             var todoItem = await _userDataContext.TodoItems.FindAsync(id);
             
             if (todoItem == null)
             {
-                return new NotFoundResult();
+                return 0;
             }
 
             todoItem.Name = todoDTO.Name;
@@ -74,9 +79,9 @@ namespace TestAPI0807.Services
             }
             catch (DbUpdateConcurrencyException) when (!TodoItemExists(id))
             {
-                return new NotFoundResult();
+                return 0;
             }
-            return new NoContentResult();
+            return 3;
         }
 
         public TodoItem PostTodoItem(TodoItemDto todoDTO)
@@ -96,7 +101,18 @@ namespace TestAPI0807.Services
 
         public async Task<int> DeleteTodoItem(long id)
         {
+            if (_userDataContext.TodoItems == null)
+            {
+                return 0;
+            }
+
             var todoitem = await _userDataContext.TodoItems.FindAsync(id);
+
+            if (todoitem == null)
+            {
+                return 0;
+            }
+
             _userDataContext.TodoItems.Remove(todoitem);
 
             return await _userDataContext.SaveChangesAsync();

@@ -53,11 +53,21 @@ public class TodoItemsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutTodoItem(long id, TodoItemDto todoDTO)
     {
-        if (id != todoDTO.Id)
+        var result = await _todoItemService.PutTodoItem(id, todoDTO);
+
+        if (result == 0)
+        {
+            return NotFound();
+        }
+        else if(result == 2)
         {
             return BadRequest();
         }
-        await _todoItemService.PutTodoItem(id, todoDTO);
+        else if( result == 3)
+        {
+            return NoContent();
+        }
+
         return Ok();
     }
     // </snippet_Update>
@@ -80,22 +90,13 @@ public class TodoItemsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTodoItem(long id)
     {
-        if (_context.TodoItems == null)
-        {
-            return NotFound();
-        }
-        var todoitem = await _context.TodoItems.FindAsync(id);
-        if (todoitem == null)
+        var result = await _todoItemService.DeleteTodoItem(id);
+
+        if (result == 0)
         {
             return NotFound();
         }
 
-        var result = await _todoItemService.DeleteTodoItem(id);
-        if (result == null)
-        {
-            return NotFound();
-        }
         return NoContent();
     }
-
 }
