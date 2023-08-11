@@ -19,8 +19,6 @@ namespace TestAPI0807.Services
 
         Task<int> DeleteTodoItem(long id);
 
-        bool TodoItemExists(long id);
-
         TodoItemDto ItemToDTO(TodoItem todoItem);
     }
 
@@ -120,7 +118,7 @@ namespace TestAPI0807.Services
 
         public bool TodoItemExists(long id)
         {
-            return _userDataContext.TodoItems.Any(e => e.Id == id);
+            return  _userDataContext.TodoItems.Any(e => e.Id == id);
         }
 
         public TodoItemDto ItemToDTO(TodoItem todoItem) =>
