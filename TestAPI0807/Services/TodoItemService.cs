@@ -92,8 +92,9 @@ namespace TestAPI0807.Services
                 IsComplete = todoDTO.IsComplete
             };
 
-            _userDataContext.TodoItems.Add(todoItem);   
-            _userDataContext.SaveChangesAsync();
+            _userDataContext.TodoItems.Add(todoItem);
+            _userDataContext.SaveChanges();
+            //_userDataContext.SaveChangesAsync();
 
             return todoItem;
         }

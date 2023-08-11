@@ -19,6 +19,7 @@ builder.Services.AddDbContext<UserDataContext>(opt =>
    opt.UseMySql(connectionString, serverVersion)
    );
 builder.Services.AddScoped<TodoItemService, TodoItemServiceImpl>();
+builder.Services.AddScoped<UserDataService, UserDataServiceImpl>();
 
 //原生TodoContext連線、使用內存資料庫
 //builder.Services.AddDbContext<TodoContext>(opt =>

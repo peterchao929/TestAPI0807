@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TestAPI0807.Models;
+using TestAPI0807.Services;
 
 namespace TestAPI0807.Controllers
 {
@@ -9,33 +10,39 @@ namespace TestAPI0807.Controllers
     public class UserDatasController : ControllerBase
     {
         private readonly UserDataContext _context;
+        private readonly UserDataService _userDataService;
 
-        public UserDatasController(UserDataContext context)
+        public UserDatasController(UserDataContext context,UserDataService userDataService)
         {
             _context = context;
+            _userDataService = userDataService;
         }
 
         // GET: api/UserDatas
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDataDto>>> GetUserDatas()
         {
-            return await _context.UserDatas
-                .Select(x => ItemToDto(x))
-                .ToListAsync();
+            var result = await _userDataService.GetUserDatas().ToListAsync();
+
+            if (result == null || result.Count() <= 0)
+            {
+                return NotFound();
+            }
+
+            return result;
         }
 
         // GET: api/UserDatas/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDataDto>> GetUserData(long id)
         {
-            var userdata = await _context.UserDatas.FindAsync(id);
+            var result = await _userDataService.GetUserData(id);
 
-            if (userdata == null)
+            if (result == null)
             {
                 return NotFound();
             }
-
-            return ItemToDto(userdata);
+            return result;
         }
 
         // PUT: api/UserDatas/5
@@ -47,29 +54,8 @@ namespace TestAPI0807.Controllers
             {
                 return BadRequest();
             }
-
-            var userdata = await _context.UserDatas.FindAsync(id);
-            if (userdata == null)
-            {
-                return NotFound();
-            }
-
-            userdata.Firstname = userDataDto.Firstname;
-            userdata.Lastname = userDataDto.Lastname;
-            userdata.Gender = userDataDto.Gender;
-            userdata.Age = userDataDto.Age;
-            userdata.RegistorDate = userDataDto.RegistorDate;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException) when (!UserDataExists(id))
-            {
-                return NotFound();
-            }
-
-            return NoContent();
+            await _userDataService.PutUserData(id, userDataDto);
+            return Ok();
         }
 
         // POST: api/UserDatas
@@ -77,24 +63,12 @@ namespace TestAPI0807.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDataDto>> PostUserData(UserDataDto userDTO)
         {
-            DateTime dateTime = DateTime.Now;
-            var userData = new UserData
-            {
-                Firstname = userDTO.Firstname,
-                Lastname = userDTO.Lastname,
-                Gender = userDTO.Gender,
-                Age = userDTO.Age,
-                RegistorDate = dateTime
-                //RegistorDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-            };
-
-            _context.UserDatas.Add(userData);
-            await _context.SaveChangesAsync();
+            var result = _userDataService.PostUserData(userDTO);
 
             return CreatedAtAction(
                 nameof(GetUserData),
-                new { id = userData.Id },
-                ItemToDto(userData));
+                new { id = result.Id },
+                _userDataService.UserToDto(result));
         }
 
         // DELETE: api/UserDatas/5
@@ -111,26 +85,12 @@ namespace TestAPI0807.Controllers
                 return NotFound();
             }
 
-            _context.UserDatas.Remove(userData);
-            await _context.SaveChangesAsync();
-
+            var result = await _userDataService.DeleteUserData(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
-
-        private bool UserDataExists(long id)
-        {
-            return _context.UserDatas.Any(e => e.Id == id);
-        }
-
-        private static UserDataDto ItemToDto(UserData userData) =>
-            new()
-            {
-                Id = userData.Id,
-                Firstname = userData.Firstname,
-                Lastname = userData.Lastname,
-                Gender = userData.Gender,
-                Age = userData.Age,
-                RegistorDate = DateTime.Now
-            };
     }
 }
