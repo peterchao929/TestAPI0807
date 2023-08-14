@@ -19,7 +19,7 @@ namespace TestAPI0807.Services
 
         Task<int> DeleteTodoItem(long id);
 
-        TodoItemDto ItemToDTO(TodoItem todoItem);
+        Task<TodoItemDto> ItemToDTO(TodoItem todoItem);
     }
 
     public class TodoItemServiceImpl : TodoItemService
@@ -53,7 +53,7 @@ namespace TestAPI0807.Services
                 return null;
             }
 
-            return ItemToDTO(todoItem);
+            return await ItemToDTO(todoItem);
         }
 
         public async Task<int> PutTodoItem(long id, TodoItemDto todoDTO)
@@ -122,7 +122,7 @@ namespace TestAPI0807.Services
             return  _userDataContext.TodoItems.Any(e => e.Id == id);
         }
 
-        public TodoItemDto ItemToDTO(TodoItem todoItem) =>
+        public async Task<TodoItemDto> ItemToDTO(TodoItem todoItem) =>
             new()
             {
                 Id = todoItem.Id,
