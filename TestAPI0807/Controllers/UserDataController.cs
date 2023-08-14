@@ -50,20 +50,30 @@ namespace TestAPI0807.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUserData(long id, UserDataDto userDataDto)
         {
-            if (id != userDataDto.Id)
+            var result = await _userDataService.PutUserData(id, userDataDto);
+
+            if (result == 0)
+            {
+                return NotFound();
+            }
+            else if (result == 2)
             {
                 return BadRequest();
             }
-            await _userDataService.PutUserData(id, userDataDto);
+            else if (result == 3)
+            {
+                return NoContent();
+            }
+
             return Ok();
         }
 
         // POST: api/UserDatas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<UserDataDto>> PostUserData(UserDataDto userDTO)
+        public async Task<IActionResult> PostUserData(UserDataDto userDTO)
         {
-            var result = _userDataService.PostUserData(userDTO);
+            var result = await _userDataService.PostUserData(userDTO);
 
             return CreatedAtAction(
                 nameof(GetUserData),
@@ -75,21 +85,13 @@ namespace TestAPI0807.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserData(long id)
         {
-            if (_context.UserDatas == null)
-            {
-                return NotFound();
-            }
-            var userData = await _context.UserDatas.FindAsync(id);
-            if (userData == null)
+            var result = await _userDataService.DeleteUserData(id);
+
+            if (result == 0)
             {
                 return NotFound();
             }
 
-            var result = await _userDataService.DeleteUserData(id);
-            if (result == null)
-            {
-                return NotFound();
-            }
             return NoContent();
         }
     }

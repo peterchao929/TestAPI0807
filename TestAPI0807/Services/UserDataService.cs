@@ -12,17 +12,15 @@ namespace TestAPI0807.Services
     {
         IQueryable<UserDataDto> GetUserDatas();
 
-        Task<ActionResult<UserDataDto>> GetUserData(long id);
+        Task<UserDataDto> GetUserData(long id);
 
-        Task<IActionResult> PutUserData(long id, UserDataDto userDataDto);
+        Task<int> PutUserData(long id, UserDataDto userDataDto);
 
-        UserData PostUserData(UserDataDto userDataDto);
+        Task<UserData> PostUserData(UserDataDto userDataDto);
 
         Task<int> DeleteUserData(long id);
 
-        bool UserDataExists(long id);
-
-        UserDataDto UserToDto(UserData userData);
+        Task<UserDataDto> UserToDto(UserData userData);
     }
     public class UserDataServiceImpl : UserDataService
     {
@@ -36,7 +34,6 @@ namespace TestAPI0807.Services
         public IQueryable<UserDataDto> GetUserDatas()
         {
             return _userDataContext.UserDatas
-            //.Select(x => UserToDto(x));
                 .Select(x => new UserDataDto
                 {
                     Id = x.Id,
@@ -48,24 +45,30 @@ namespace TestAPI0807.Services
                 });
         }
 
-        public async Task<ActionResult<UserDataDto>> GetUserData(long id)
+        public async Task<UserDataDto> GetUserData(long id)
         {
             var userdata = await _userDataContext.UserDatas.FindAsync(id);
 
             if (userdata == null)
             {
-                return new NotFoundResult();
+                return null;
             }
 
-            return UserToDto(userdata);
+            return await UserToDto(userdata);
         }
 
-        public async Task<IActionResult> PutUserData(long id, UserDataDto userDataDto)
+        public async Task<int> PutUserData(long id, UserDataDto userDataDto)
         {
+            if (id != userDataDto.Id)
+            {
+                return 2;
+            }
+
             var userdata = await _userDataContext.UserDatas.FindAsync(id);
+
             if (userdata == null)
             {
-                return new NotFoundResult();
+                return 0;
             }
 
             userdata.Firstname = userDataDto.Firstname;
@@ -80,13 +83,12 @@ namespace TestAPI0807.Services
             }
             catch (DbUpdateConcurrencyException) when (!UserDataExists(id))
             {
-                return new NotFoundResult();
+                return 0;
             }
-
-            return new NoContentResult();
+            return 3;
         }
 
-        public UserData PostUserData(UserDataDto userDto)
+        public async Task<UserData> PostUserData(UserDataDto userDto)
         {
             DateTime dateTime = DateTime.Now;
             UserData userData = new UserData
@@ -99,13 +101,24 @@ namespace TestAPI0807.Services
             };
 
             _userDataContext.UserDatas.Add(userData);
-            _userDataContext.SaveChanges();
+            await _userDataContext.SaveChangesAsync();
             return userData;
         }
 
         public async Task<int> DeleteUserData(long id)
         {
+            if (_userDataContext.UserDatas == null)
+            {
+                return 0;
+            }
+
             var userdata = await _userDataContext.UserDatas.FindAsync(id);
+
+            if (userdata == null)
+            {
+                return 0;
+            }
+
             _userDataContext.UserDatas.Remove(userdata);
 
             return await _userDataContext.SaveChangesAsync();
@@ -116,7 +129,7 @@ namespace TestAPI0807.Services
             return _userDataContext.UserDatas.Any(e => e.Id == id);
         }
 
-        public UserDataDto UserToDto(UserData userData) =>
+        public async Task<UserDataDto> UserToDto(UserData userData) =>
             new()
             {
                 Id = userData.Id,
