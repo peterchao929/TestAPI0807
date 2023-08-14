@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
-//using System.Data.Entity;
 using TestAPI0807.Models;
 
 namespace TestAPI0807.Services

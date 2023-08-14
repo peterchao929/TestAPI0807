@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
-using System.Data.Entity;
+using System.Collections.Generic;
 using System.Linq;
 using TestAPI0807.Models;
 
@@ -10,7 +10,7 @@ namespace TestAPI0807.Services
 {
     public interface UserDataService
     {
-        IQueryable<UserDataDto> GetUserDatas();
+        Task<List<UserDataDto>> GetUserDatas();
 
         Task<UserDataDto> GetUserData(long id);
 
@@ -31,9 +31,10 @@ namespace TestAPI0807.Services
             _userDataContext = userDataContext;
         }
 
-        public IQueryable<UserDataDto> GetUserDatas()
+        public async Task<List<UserDataDto>> GetUserDatas()
         {
-            return _userDataContext.UserDatas
+            var userdata = await _userDataContext.UserDatas.ToListAsync();
+            return userdata
                 .Select(x => new UserDataDto
                 {
                     Id = x.Id,
@@ -42,7 +43,8 @@ namespace TestAPI0807.Services
                     Gender = x.Gender,
                     Age = x.Age,
                     RegistorDate = x.RegistorDate
-                });
+                })
+                .ToList();
         }
 
         public async Task<UserDataDto> GetUserData(long id)

@@ -22,7 +22,7 @@ namespace TestAPI0807.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDataDto>>> GetUserDatas()
         {
-            var result = await _userDataService.GetUserDatas().ToListAsync();
+            var result = await _userDataService.GetUserDatas();
 
             if (result == null || result.Count() <= 0)
             {
