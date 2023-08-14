@@ -9,13 +9,13 @@ namespace TestAPI0807.Services
 {
     public interface TodoItemService
     {
-        IQueryable<TodoItemDto> GetTodoItems();
+        Task<List<TodoItemDto>> GetTodoItems();
 
         Task<TodoItemDto> GetTodoItem(long id);
 
         Task<int> PutTodoItem(long id, TodoItemDto todoDTO);
 
-        TodoItem PostTodoItem(TodoItemDto todoItemDto);
+        Task<TodoItem> PostTodoItem(TodoItemDto todoItemDto);
 
         Task<int> DeleteTodoItem(long id);
 
@@ -31,15 +31,17 @@ namespace TestAPI0807.Services
             _userDataContext = userDataContext;
         }
 
-        public IQueryable<TodoItemDto> GetTodoItems()
+        public async Task<List<TodoItemDto>> GetTodoItems()
         {
-            return  _userDataContext.TodoItems
+            var todoitem = await _userDataContext.TodoItems.ToListAsync();
+            return todoitem
                 .Select(x => new TodoItemDto
                 {
                     Id = x.Id,
                     Name = x.Name,
                     IsComplete = x.IsComplete
-                });
+                })
+                .ToList();
         }
 
         public async Task<TodoItemDto> GetTodoItem(long id)
@@ -82,7 +84,7 @@ namespace TestAPI0807.Services
             return 3;
         }
 
-        public TodoItem PostTodoItem(TodoItemDto todoDTO)
+        public async Task<TodoItem> PostTodoItem(TodoItemDto todoDTO)
         {
             TodoItem todoItem = new()
             {
@@ -90,9 +92,8 @@ namespace TestAPI0807.Services
                 IsComplete = todoDTO.IsComplete
             };
 
-            _userDataContext.TodoItems.Add(todoItem);
-            _userDataContext.SaveChanges();
-            //_userDataContext.SaveChangesAsync();
+            _userDataContext.TodoItems.AddAsync(todoItem);
+            await _userDataContext.SaveChangesAsync();
 
             return todoItem;
         }

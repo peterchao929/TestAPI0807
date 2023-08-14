@@ -23,7 +23,7 @@ public class TodoItemsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TodoItemDto>>> GetTodoItems()
     {
-        var result = await _todoItemService.GetTodoItems().ToListAsync();
+        var result = await _todoItemService.GetTodoItems();
           
         if (result == null || result.Count() <= 0)
         {
@@ -75,9 +75,9 @@ public class TodoItemsController : ControllerBase
     // POST: api/TodoItems
     // <snippet_Create>
     [HttpPost]
-    public IActionResult PostTodoItem(TodoItemDto todoDTO)
+    public async Task<IActionResult> PostTodoItem(TodoItemDto todoDTO)
     {
-        var result =  _todoItemService.PostTodoItem(todoDTO);
+        var result = await _todoItemService.PostTodoItem(todoDTO);
 
         return CreatedAtAction(
             nameof(GetTodoItem),
