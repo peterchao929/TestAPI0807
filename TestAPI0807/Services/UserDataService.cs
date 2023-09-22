@@ -57,14 +57,14 @@ namespace TestAPI0807.Services
             }
 
             return await UserToDto(userdata);
-        }
+        } 
 
         public async Task<int> PutUserData(long id, UserDataDto userDataDto)
         {
-            if (id != userDataDto.Id)
-            {
-                return 2;
-            }
+            //if (id != userDataDto.Id)
+            //{
+            //    return 2;
+            //}
 
             var userdata = await _userDataContext.UserDatas.FindAsync(id);
 
@@ -77,7 +77,7 @@ namespace TestAPI0807.Services
             userdata.Lastname = userDataDto.Lastname;
             userdata.Gender = userDataDto.Gender;
             userdata.Age = userDataDto.Age;
-            userdata.RegistorDate = userDataDto.RegistorDate;
+            userdata.RegistorDate = DateTime.Now;
 
             try
             {

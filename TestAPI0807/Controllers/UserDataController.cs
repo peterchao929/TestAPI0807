@@ -48,7 +48,7 @@ namespace TestAPI0807.Controllers
         // PUT: api/UserDatas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUserData(long id, UserDataDto userDataDto)
+        public async Task<IActionResult> PutUserData([FromRoute] long id, [FromBody] UserDataDto userDataDto)
         {
             var result = await _userDataService.PutUserData(id, userDataDto);
 
