@@ -27,6 +27,18 @@ builder.Services.AddScoped<UserDataService, UserDataServiceImpl>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// 允許CORS
+builder.Services.AddCors(opt =>
+{
+    opt.AddDefaultPolicy(
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,6 +47,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// 30~40行增加完畢，下面這邊還要記得Use才會啟用
+app.UseCors();
 
 app.UseHttpsRedirection();
 
